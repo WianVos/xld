@@ -182,10 +182,10 @@ func (r RepositoryServiceOp) CiExists(n string) (bool, error) {
 	req, err := r.client.NewRequest(url, "GET", nil)
 
 	resp, err := r.client.Do(req, &e)
-	defer resp.Body.Close()
 	if err != nil {
 		return false, err
 	}
+	defer resp.Body.Close()
 
 	return e.Exists, nil
 
