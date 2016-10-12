@@ -18,7 +18,7 @@ type RepositoryService interface {
 	//GetDictionary(n string) (DictionaryCI, error)
 	//GetGeneric(n string)
 	CreateCi(n string, t string, p map[string]interface{}) (Ci, error)
-	GetGeneric(n string) (Ci, error)
+	GetCi(n string) (Ci, error)
 	CiExists(n string) (bool, error)
 }
 
@@ -46,7 +46,7 @@ type ciTrue struct {
 }
 
 //GetGeneric retrieves a CI form xld
-func (r RepositoryServiceOp) GetGeneric(n string) (Ci, error) {
+func (r RepositoryServiceOp) GetCi(n string) (Ci, error) {
 
 	var e map[string]interface{}
 	ri := make(map[string]interface{})
@@ -90,6 +90,9 @@ func (r RepositoryServiceOp) GetGeneric(n string) (Ci, error) {
 }
 
 //CreateCi  creates/updates a CI
+// n: name
+// t: type
+// p: properties
 func (r RepositoryServiceOp) CreateCi(n string, t string, p map[string]interface{}) (Ci, error) {
 
 	ci := make(map[string]interface{})
@@ -138,7 +141,6 @@ func (r RepositoryServiceOp) CreateCi(n string, t string, p map[string]interface
 			}
 		}
 
-		fmt.Printf("%+v", ci)
 	}
 
 	//marshall the json and send it

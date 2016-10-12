@@ -7,6 +7,51 @@ import (
 	"testing"
 )
 
+func TestCreateGeneric(t *testing.T) {
+	setup()
+	defer teardown()
+
+	//setup the mock restinterfaces
+
+	mux.HandleFunc("/deployit/repository/ci/Environments/testDictionary1", func(w http.ResponseWriter, r *http.Request) {
+		//testMethod(t, r, m.method)
+
+		fmt.Fprint(w, mockTestDictionaryResponse)
+	})
+
+	mux.HandleFunc("/deployit/metadata/type/udm.Dictionary", func(w http.ResponseWriter, r *http.Request) {
+		//testMethod(t, r, m.method)
+
+		fmt.Fprint(w, mockTestDictionaryMetaResponse)
+	})
+
+	cases := []struct {
+		name        string
+		ciType      string
+		properties  map[string]interface{}
+		expectedCi  Ci
+		expectedErr error
+	}{
+		{
+			name:   "Environments/testDictionary1",
+			ciType: "udm.Dictionary",
+			properties: map[string]interface{}{
+				"entries": map[string]string{"test": "test", "bank": "rabo"},
+			},
+			expectedCi:  getDictionaryCiStruct(),
+			expectedErr: nil,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := client.Repository.CreateCi(c.name, c.ciType, c.properties)
+		if !reflect.DeepEqual(err, c.expectedErr) {
+			t.Errorf("Expected err to be %q but it was %q", c.expectedErr, err)
+		}
+
+	}
+}
+
 func TestGetGeneric(t *testing.T) {
 	setup()
 	defer teardown()
@@ -22,12 +67,12 @@ func TestGetGeneric(t *testing.T) {
 	})
 
 	//use the GetGeneric function
-	acct, err := client.Repository.GetGeneric("Environments/testDictionary1")
+	acct, err := client.Repository.GetCi("Environments/testDictionary1")
 	if err != nil {
 		t.Errorf("repository.GetGeneric returned error: %v", err)
 	}
 
-	expected, _ := client.Repository.GetGeneric("Environments/testDictionary1")
+	expected, _ := client.Repository.GetCi("Environments/testDictionary1")
 
 	fields := []string{"entries", "encryptedEntries", "restrictToContainers", "restrictToApplications"}
 
