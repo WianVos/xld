@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"path"
 	"strings"
 )
 
@@ -41,11 +42,14 @@ type Ci struct {
 	Properties     map[string]interface{}
 }
 
+//Cis is a collections of Ci's
+type Cis []Ci
+
 type ciTrue struct {
 	Exists bool `json:"boolean"`
 }
 
-//GetGeneric retrieves a CI form xld
+//GetCi retrieves a CI form xld
 func (r RepositoryServiceOp) GetCi(n string) (Ci, error) {
 
 	var e map[string]interface{}
@@ -191,6 +195,16 @@ func (r RepositoryServiceOp) CiExists(n string) (bool, error) {
 
 	return e.Exists, nil
 
+}
+
+//Path returns the path of a Ci .. this is part of the ci id
+func (c Ci) Path() string {
+	return path.Dir(c.ID)
+}
+
+//Name returns the name of the ci.. the last part of the id
+func (c Ci) Name() string {
+	return path.Base(c.ID)
 }
 
 //private functions
