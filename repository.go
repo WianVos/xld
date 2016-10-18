@@ -63,6 +63,11 @@ func (r RepositoryServiceOp) GetCi(n string) (Ci, error) {
 	req, err := r.client.NewRequest(url, "GET", nil)
 
 	resp, err := r.client.Do(req, &e)
+
+	if err != nil {
+		return c, err
+	}
+
 	defer resp.Body.Close()
 
 	//Pull out the ci parts
