@@ -51,7 +51,6 @@ func TestCreateGeneric(t *testing.T) {
 
 	}
 }
-
 func TestGetGeneric(t *testing.T) {
 	setup()
 	defer teardown()
@@ -81,6 +80,39 @@ func TestGetGeneric(t *testing.T) {
 			t.Errorf("Template.List returned %+v, expected %+v", acct.Properties[f], expected.Properties[f])
 		}
 	}
+}
+
+func TestListCis(t *testing.T) {
+	setup()
+	defer teardown()
+	//setup mock rest interfaces
+	mux.HandleFunc("/deployit/repository/query", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, mockTestListResponse)
+	})
+
+	//use the GetGeneric function
+	acct, err := client.Repository.ListCis("Environments")
+	if err != nil {
+		t.Errorf("repository.ListCis returned error: %v", err)
+	}
+
+	expected := getCiListStruct()
+	for _, ci := range acct {
+		if ciInList(ci, expected) == false {
+			t.Errorf("repository.ListCis: expected: %v , found: %v", acct, expected)
+		}
+	}
+
+}
+
+func ciInList(c CiListEntry, l CiList) bool {
+	for _, ci := range l {
+		if c.ID == ci.ID && ci.Type == c.Type {
+			return true
+		}
+	}
+	return false
 }
 
 func TestCiExists(t *testing.T) {
@@ -147,6 +179,23 @@ func getDictionaryCiStruct() Ci {
 			"encryptedEntries":       map[string]string{"test": "test", "bank": "rabo"},
 		},
 	}
+
+}
+
+func getCiListStruct() CiList {
+	return CiList{CiListEntry{
+		ID: "Environments/Wian", Type: "udm.Dictionary",
+	}, {
+		ID: "Environments/Wian2", Type: "udm.Dictionary",
+	}, {
+		ID: "Environments/merged_test1_test2", Type: "udm.Dictionary",
+	}, {
+		ID: "Environments/test1", Type: "udm.Dictionary",
+	}, {
+		ID: "Environments/test2", Type: "udm.Dictionary",
+	}, {
+		ID: "Environments/test2env", Type: "udm.Environment",
+	}}
 
 }
 
@@ -254,6 +303,14 @@ var mockTestDictionaryMetaResponse = `{
     "udm.BaseConfigurationItem"
   ]
 }`
+
+var mockTestListResponse = `
+[{"ref":"Environments/Wian","type":"udm.Dictionary"},
+{"ref":"Environments/Wian2","type":"udm.Dictionary"},
+{"ref":"Environments/merged_test1_test2","type":"udm.Dictionary"},
+{"ref":"Environments/test1","type":"udm.Dictionary"},
+{"ref":"Environments/test2","type":"udm.Dictionary"},
+{"ref":"Environments/test2env","type":"udm.Environment"}]`
 
 // func TestTemplatesList(t *testing.T) {
 // 	setup()

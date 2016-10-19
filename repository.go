@@ -21,6 +21,7 @@ type RepositoryService interface {
 	CreateCi(n string, t string, p map[string]interface{}) (Ci, error)
 	GetCi(n string) (Ci, error)
 	CiExists(n string) (bool, error)
+	ListCis(n string) (CiList, error)
 }
 
 //RepositoryServiceOp holds the communication service for Repositorys
@@ -41,6 +42,15 @@ type Ci struct {
 	LastModifiedAt string `json:"$lastModifiedAt,omitempty"`
 	Properties     map[string]interface{}
 }
+
+//CiListEntry representation of a xldeploy query entry
+type CiListEntry struct {
+	ID   string `json:"ref"`
+	Type string `json:"type"`
+}
+
+//CiList can contain a list of CiListEntries
+type CiList []CiListEntry
 
 //Cis is a collections of Ci's
 type Cis []Ci
@@ -96,6 +106,27 @@ func (r RepositoryServiceOp) GetCi(n string) (Ci, error) {
 	c.Properties = ri
 
 	return c, nil
+}
+
+//ListCis retrieves a list of Cis given a path in xld
+func (r RepositoryServiceOp) ListCis(n string) (CiList, error) {
+
+	var err error
+	var ciList []CiListEntry
+
+	url := repositoryBasePath + "/" + "query" + "?ancestor=/" + n
+
+	req, err := r.client.NewRequest(url, "GET", nil)
+
+	resp, err := r.client.Do(req, &ciList)
+
+	if err != nil {
+		return ciList, err
+	}
+
+	defer resp.Body.Close()
+
+	return ciList, nil
 }
 
 //CreateCi  creates/updates a CI
