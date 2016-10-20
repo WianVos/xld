@@ -146,6 +146,7 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 
 	ci.ID = n
 	ci.Type = t
+	ci.Properties = make(map[string]interface{})
 
 	//get metadata for intended type
 	metaData, _ := r.client.Meta.GetProperties(t)
@@ -156,8 +157,6 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 	for k, v := range p {
 		propType := metaData[k]
 		switch v := v.(type) {
-		default:
-			fmt.Printf("unexpected type %T\n", v) // %T prints whatever type t has
 		case string:
 			if propType == "STRING" || propType == "CI" {
 				ci.Properties[k] = v
@@ -178,6 +177,8 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 			if propType == "SET_OF_STRING" || propType == "SET_OF_CI" {
 				ci.Properties[k] = v
 			}
+		default:
+			fmt.Printf("unexpected type %T\n", v) // %T prints whatever type t has
 		}
 
 	}
