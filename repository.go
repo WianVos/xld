@@ -317,25 +317,5 @@ func validateID(i string) (bool, error) {
 
 //SaveCi : Saves a ci object to the xld repository
 func (r RepositoryServiceOp) SaveCi(c Ci) (Ci, error) {
-	var verb string
-	fmt.Printf("%+v\n", c)
-	//marshall the json and send it
-	url := repositoryBasePath + "/ci/" + c.ID
-
-	exists, _ := r.CiExists(c.ID)
-
-	if exists == true {
-		verb = "PUT"
-	} else {
-		verb = "POST"
-	}
-
-	req, err := r.client.NewRequest(url, verb, c)
-	if err != nil {
-		return c, err
-	}
-
-	_, err = r.client.Do(req, &c)
-
-	return c, err
+	return r.CreateCi(c.ID, c.Type, c.Properties)
 }
