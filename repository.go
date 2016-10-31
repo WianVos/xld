@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"path"
 	"strings"
+
+	"github.com/WianVos/xld"
 )
 
 const (
@@ -18,6 +20,7 @@ const (
 type RepositoryService interface {
 	//GetDictionary(n string) (DictionaryCI, error)
 	//GetGeneric(n string)
+	SaveCi(c xld.Ci) (Ci, error)
 	CreateCi(n string, t string, p map[string]interface{}) (Ci, error)
 	NewCi(n string, t string, p map[string]interface{}) (Ci, error)
 	GetCi(n string) (Ci, error)
@@ -312,4 +315,28 @@ func validateID(i string) (bool, error) {
 	}
 
 	return false, errors.New("invalid ci id")
+}
+
+//SaveCi : Saves a ci object to the xld repository
+func (r RepositoryServiceOp) SaveCi(c xld.Ci) (xld.Ci, error) {
+	var verb string
+	//marshall the json and send it
+	url := repositoryBasePath + "/ci/" + c.ID
+
+	exists, _ := r.CiExists(c.ID)
+
+	if exists == true {
+		verb = "PUT"
+	} else {
+		verb = "POST"
+	}
+
+	req, err := r.client.NewRequest(url, verb, ci)
+	if err != nil {
+		return dc, err
+	}
+
+	_, err = r.client.Do(req, &dc)
+
+	return c, err
 }
