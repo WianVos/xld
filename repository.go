@@ -20,6 +20,7 @@ type RepositoryService interface {
 	//GetGeneric(n string)
 	SaveCi(c Ci) (Ci, error)
 	CreateCi(n string, t string, p map[string]interface{}) (Ci, error)
+	NewCi(n string, t string, p map[string]interface{}) (Ci, error)
 	GetCi(n string) (Ci, error)
 	CiExists(n string) (bool, error)
 	ListCis(n string) (CiList, error)
@@ -129,6 +130,62 @@ func (r RepositoryServiceOp) ListCis(n string) (CiList, error) {
 	defer resp.Body.Close()
 
 	return ciList, nil
+}
+
+//NewCi creates a CI object
+// n: name
+// t: type
+// p: properties
+func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{}) (Ci, error) {
+
+	var ci Ci
+
+	// validate the id: it needs to contain either Environments, Infrastructure, Applications
+	_, err := validateID(n)
+	if err != nil {
+		return ci, err
+	}
+
+	ci.ID = n
+	ci.Type = t
+	ci.Properties = make(map[string]interface{})
+
+	//get metadata for intended type
+	metaData, _ := r.client.Meta.GetProperties(t)
+
+	//validate Properties
+	//loop over the metadata and see if the properties we got handed are actually the right type
+	// it they are the right type put them in the final map
+	for k, v := range p {
+		propType := metaData[k]
+		switch v := v.(type) {
+		case string:
+			if propType == "STRING" || propType == "CI" {
+				ci.Properties[k] = v
+			}
+		case bool:
+			if propType == "BOOLEAN" {
+				ci.Properties[k] = v
+			}
+		case int:
+			if propType == "INTEGER" {
+				ci.Properties[k] = int(v)
+			}
+		case map[string]interface{}, map[string]string:
+			if propType == "MAP_STRING_STRING" {
+				ci.Properties[k] = v
+			}
+		case []string:
+			if propType == "SET_OF_STRING" || propType == "SET_OF_CI" {
+				ci.Properties[k] = v
+			}
+		default:
+			fmt.Printf("unexpected type %T\n", v) // %T prints whatever type t has
+		}
+
+	}
+
+	return ci, nil
 }
 
 //CreateCi  creates/updates a CI
