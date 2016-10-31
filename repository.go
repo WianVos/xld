@@ -20,7 +20,7 @@ const (
 type RepositoryService interface {
 	//GetDictionary(n string) (DictionaryCI, error)
 	//GetGeneric(n string)
-	SaveCi(c xld.Ci) (Ci, error)
+	SaveCi(c xld.Ci) (xld.Ci, error)
 	CreateCi(n string, t string, p map[string]interface{}) (Ci, error)
 	NewCi(n string, t string, p map[string]interface{}) (Ci, error)
 	GetCi(n string) (Ci, error)
