@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"path"
 	"strings"
-
-	"github.com/WianVos/xld"
 )
 
 const (
@@ -20,7 +18,7 @@ const (
 type RepositoryService interface {
 	//GetDictionary(n string) (DictionaryCI, error)
 	//GetGeneric(n string)
-	SaveCi(c xld.Ci) (xld.Ci, error)
+	SaveCi(c Ci) (Ci, error)
 	CreateCi(n string, t string, p map[string]interface{}) (Ci, error)
 	NewCi(n string, t string, p map[string]interface{}) (Ci, error)
 	GetCi(n string) (Ci, error)
@@ -318,7 +316,7 @@ func validateID(i string) (bool, error) {
 }
 
 //SaveCi : Saves a ci object to the xld repository
-func (r RepositoryServiceOp) SaveCi(c xld.Ci) (xld.Ci, error) {
+func (r RepositoryServiceOp) SaveCi(c Ci) (Ci, error) {
 	var verb string
 	//marshall the json and send it
 	url := repositoryBasePath + "/ci/" + c.ID
@@ -331,12 +329,12 @@ func (r RepositoryServiceOp) SaveCi(c xld.Ci) (xld.Ci, error) {
 		verb = "POST"
 	}
 
-	req, err := r.client.NewRequest(url, verb, ci)
+	req, err := r.client.NewRequest(url, verb, c)
 	if err != nil {
-		return dc, err
+		return c, err
 	}
 
-	_, err = r.client.Do(req, &dc)
+	_, err = r.client.Do(req, &c)
 
 	return c, err
 }
