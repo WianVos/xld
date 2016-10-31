@@ -20,10 +20,10 @@ type RepositoryService interface {
 	//GetGeneric(n string)
 	SaveCi(c Ci) (Ci, error)
 	CreateCi(n string, t string, p map[string]interface{}) (Ci, error)
-	NewCi(n string, t string, p map[string]interface{}) (Ci, error)
 	GetCi(n string) (Ci, error)
 	CiExists(n string) (bool, error)
 	ListCis(n string) (CiList, error)
+	TranslateCiProperties(n, t string, p map[string]interface{}) (map[string]interface{}, error)
 }
 
 //RepositoryServiceOp holds the communication service for Repositorys
@@ -131,76 +131,52 @@ func (r RepositoryServiceOp) ListCis(n string) (CiList, error) {
 	return ciList, nil
 }
 
-//NewCI creates a CI object
-// n: name
-// t: type
-// p: properties
-func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{}) (Ci, error) {
-
-	var ci Ci
-
-	// validate the id: it needs to contain either Environments, Infrastructure, Applications
-	_, err := validateID(n)
-	if err != nil {
-		return ci, err
-	}
-
-	ci.ID = n
-	ci.Type = t
-	ci.Properties = make(map[string]interface{})
-
-	//get metadata for intended type
-	metaData, _ := r.client.Meta.GetProperties(t)
-
-	//validate Properties
-	//loop over the metadata and see if the properties we got handed are actually the right type
-	// it they are the right type put them in the final map
-	for k, v := range p {
-		propType := metaData[k]
-		switch v := v.(type) {
-		case string:
-			if propType == "STRING" || propType == "CI" {
-				ci.Properties[k] = v
-			}
-		case bool:
-			if propType == "BOOLEAN" {
-				ci.Properties[k] = v
-			}
-		case int:
-			if propType == "INTEGER" {
-				ci.Properties[k] = int(v)
-			}
-		case map[string]interface{}, map[string]string:
-			if propType == "MAP_STRING_STRING" {
-				ci.Properties[k] = v
-			}
-		case []string:
-			if propType == "SET_OF_STRING" || propType == "SET_OF_CI" {
-				ci.Properties[k] = v
-			}
-		default:
-			fmt.Printf("unexpected type %T\n", v) // %T prints whatever type t has
-		}
-
-	}
-
-	return ci, nil
-}
-
 //CreateCi  creates/updates a CI
 // n: name
 // t: type
 // p: properties
 func (r RepositoryServiceOp) CreateCi(n string, t string, p map[string]interface{}) (Ci, error) {
 
-	ci := make(map[string]interface{})
 	var dc Ci
 	var verb string
+
+	ci, err := r.TranslateCiProperties(n, t, p)
+	if err != nil {
+		return dc, err
+	}
+	//marshall the json and send it
+	url := repositoryBasePath + "/ci/" + n
+
+	exists, _ := r.CiExists(n)
+
+	if exists == true {
+		verb = "PUT"
+	} else {
+		verb = "POST"
+	}
+
+	req, err := r.client.NewRequest(url, verb, ci)
+	if err != nil {
+		return dc, err
+	}
+
+	_, err = r.client.Do(req, &dc)
+	if err != nil {
+		return dc, err
+	}
+
+	return dc, nil
+
+}
+
+//TranslateCiProperties returns an object that can be encoded in XL-Deploy understandable json
+func (r RepositoryServiceOp) TranslateCiProperties(n, t string, p map[string]interface{}) (map[string]interface{}, error) {
+	ci := make(map[string]interface{})
 
 	// validate the id: it needs to contain either Environments, Infrastructure, Applications
 	_, err := validateID(n)
 	if err != nil {
-		return dc, err
+		return make(map[string]interface{}), err
 	}
 
 	ci["id"] = n
@@ -240,30 +216,7 @@ func (r RepositoryServiceOp) CreateCi(n string, t string, p map[string]interface
 		}
 
 	}
-
-	//marshall the json and send it
-	url := repositoryBasePath + "/ci/" + n
-
-	exists, _ := r.CiExists(n)
-
-	if exists == true {
-		verb = "PUT"
-	} else {
-		verb = "POST"
-	}
-
-	req, err := r.client.NewRequest(url, verb, ci)
-	if err != nil {
-		return dc, err
-	}
-
-	_, err = r.client.Do(req, &dc)
-	if err != nil {
-		return dc, err
-	}
-
-	return dc, nil
-
+	return ci, nil
 }
 
 //CiExists checks if a CI exists
