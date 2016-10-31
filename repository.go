@@ -318,6 +318,7 @@ func validateID(i string) (bool, error) {
 //SaveCi : Saves a ci object to the xld repository
 func (r RepositoryServiceOp) SaveCi(c Ci) (Ci, error) {
 	var verb string
+	fmt.Printf("%+v\n", c)
 	//marshall the json and send it
 	url := repositoryBasePath + "/ci/" + c.ID
 
