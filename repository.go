@@ -71,6 +71,11 @@ func (r RepositoryServiceOp) GetCi(n string) (Ci, error) {
 	var err error
 	var c Ci
 
+	if ok, _ := r.CiExists(n); ok {
+		s := fmt.Sprintf("CI: %s does not exists", n)
+		return c, errors.New(s)
+	}
+
 	url := repositoryBasePath + "/" + "ci" + "/" + n
 
 	req, err := r.client.NewRequest(url, "GET", nil)
