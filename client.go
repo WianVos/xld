@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 const (
@@ -108,6 +110,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	resp, err := c.client.Do(req)
 	fmt.Printf("%+v\n", resp.Body)
+	_, err = io.Copy(os.Stdout, resp.Body)
 	if err != nil {
 		return nil, err
 	}
