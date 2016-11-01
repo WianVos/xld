@@ -264,43 +264,31 @@ func (r RepositoryServiceOp) TranslateCiProperties(n, t string, p map[string]int
 	for k, v := range p {
 		propType := metaData[k]
 		switch v := v.(type) {
+		default:
+			fmt.Printf("unexpected type %T\n", v) // %T prints whatever type t has
 		case string:
 			if propType == "STRING" || propType == "CI" {
-				fmt.Println("string")
-
-				ci.Properties[k] = v
+				ci[k] = v
 			}
 		case bool:
 			if propType == "BOOLEAN" {
-				fmt.Println("bool")
-
-				ci.Properties[k] = v
+				ci[k] = v
 			}
 		case int:
 			if propType == "INTEGER" {
-				fmt.Println("Int")
-
-				ci.Properties[k] = int(v)
+				ci[k] = int(v)
 			}
 		case map[string]interface{}, map[string]string:
 			if propType == "MAP_STRING_STRING" {
-				fmt.Println("map_string_string")
-				ci.Properties[k] = v
+				ci[k] = v
 			}
 		case []string, []interface{}:
-			fmt.Println(propType)
 			if propType == "SET_OF_STRING" || propType == "SET_OF_CI" {
-				fmt.Println("Set_of_string")
-
-				ci.Properties[k] = v
+				ci[k] = v
 			}
-		default:
-			fmt.Println(propType)
-			fmt.Printf("unexpected type %T\n", v) // %T prints whatever type t has
 		}
 
 	}
-
 	return ci, nil
 }
 
