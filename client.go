@@ -110,7 +110,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	resp, err := c.client.Do(req)
 	//fmt.Printf("%+v\n", resp.Body)
 	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(body)
+	fmt.Println(string(body))
 	if err != nil {
 		return nil, err
 	}
