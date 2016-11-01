@@ -195,6 +195,7 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 				ci.Properties[k] = v
 			}
 		default:
+			fmt.Println(propType)
 			fmt.Printf("unexpected type %T\n", v) // %T prints whatever type t has
 		}
 
