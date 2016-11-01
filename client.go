@@ -3,6 +3,7 @@ package xld
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -103,7 +104,7 @@ func (c *Client) NewRequest(urlStr string, method string, body interface{}) (*ht
 // pointed to by v, or returned as an error if an API error has occurred. If v implements the io.Writer interface,
 // the raw response will be written to v, without attempting to decode it.
 func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
-
+	fmt.Printf("%+v\n", v)
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
