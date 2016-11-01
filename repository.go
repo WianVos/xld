@@ -188,6 +188,7 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 				ci.Properties[k] = v
 			}
 		case []string, []interface{}:
+			fmt.Println(propType)
 			if propType == "SET_OF_STRING" || propType == "SET_OF_CI" {
 				fmt.Println("Set_of_string")
 
