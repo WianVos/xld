@@ -178,10 +178,13 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 			}
 		case map[string]interface{}, map[string]string:
 			if propType == "MAP_STRING_STRING" {
+				fmt.Println("map_string_string")
 				ci.Properties[k] = v
 			}
 		case []string:
 			if propType == "SET_OF_STRING" || propType == "SET_OF_CI" {
+				fmt.Println("Set_of_string")
+
 				ci.Properties[k] = v
 			}
 		default:
@@ -216,8 +219,6 @@ func (r RepositoryServiceOp) CreateCi(n string, t string, p map[string]interface
 	} else {
 		verb = "POST"
 	}
-
-	fmt.Printf("%+v\n", ci)
 
 	req, err := r.client.NewRequest(url, verb, ci)
 	if err != nil {
