@@ -180,7 +180,7 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 			if propType == "INTEGER" {
 				fmt.Println("Int")
 
-				ci.Properties[k] = v.(float64)
+				ci.Properties[k] = v.(int)
 			}
 		case map[string]interface{}, map[string]string:
 			if propType == "MAP_STRING_STRING" {
@@ -276,7 +276,7 @@ func (r RepositoryServiceOp) TranslateCiProperties(n, t string, p map[string]int
 			}
 		case int, float32, float64:
 			if propType == "INTEGER" {
-				ci[k] = v.(float64)
+				ci[k] = v.(int)
 			}
 		case map[string]interface{}, map[string]string:
 			if propType == "MAP_STRING_STRING" {
