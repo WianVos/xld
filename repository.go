@@ -166,14 +166,20 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 		switch v := v.(type) {
 		case string:
 			if propType == "STRING" || propType == "CI" {
+				fmt.Println("string")
+
 				ci.Properties[k] = v
 			}
 		case bool:
 			if propType == "BOOLEAN" {
+				fmt.Println("bool")
+
 				ci.Properties[k] = v
 			}
 		case int:
 			if propType == "INTEGER" {
+				fmt.Println("Int")
+
 				ci.Properties[k] = int(v)
 			}
 		case map[string]interface{}, map[string]string:
@@ -181,7 +187,7 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 				fmt.Println("map_string_string")
 				ci.Properties[k] = v
 			}
-		case []string:
+		case []string, []interface{}:
 			if propType == "SET_OF_STRING" || propType == "SET_OF_CI" {
 				fmt.Println("Set_of_string")
 
