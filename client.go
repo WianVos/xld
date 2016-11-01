@@ -109,7 +109,7 @@ func (c *Client) NewRequest(urlStr string, method string, body interface{}) (*ht
 func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	resp, err := c.client.Do(req)
-	fmt.Printf("%+v\n", resp.Body)
+	//fmt.Printf("%+v\n", resp.Body)
 	_, err = io.Copy(os.Stdout, resp.Body)
 	if err != nil {
 		return nil, err
