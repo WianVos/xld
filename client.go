@@ -109,8 +109,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	resp, err := c.client.Do(req)
 	//fmt.Printf("%+v\n", resp.Body)
-	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
+
 	if err != nil {
 		return nil, err
 	}
@@ -122,6 +121,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	}()
 
 	if err := json.NewDecoder(resp.Body).Decode(v); err != nil {
+		body, err := ioutil.ReadAll(resp.Body)
+		fmt.Println(string(body))
 		return nil, err
 	}
 
