@@ -276,7 +276,7 @@ func (r RepositoryServiceOp) TranslateCiProperties(n, t string, p map[string]int
 			}
 		case int, float32, float64:
 			if propType == "INTEGER" {
-				ci[k] = v.(int)
+				ci[k] = v.(float64)
 			}
 		case map[string]interface{}, map[string]string:
 			if propType == "MAP_STRING_STRING" {
