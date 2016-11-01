@@ -217,6 +217,8 @@ func (r RepositoryServiceOp) CreateCi(n string, t string, p map[string]interface
 		verb = "POST"
 	}
 
+	fmt.Printf("%+v\n", ci)
+
 	req, err := r.client.NewRequest(url, verb, ci)
 	if err != nil {
 		return dc, err
@@ -332,6 +334,7 @@ func validateID(i string) (bool, error) {
 
 //SaveCi : Saves a ci object to the xld repository
 func (r RepositoryServiceOp) SaveCi(c Ci) (Ci, error) {
+
 	return r.CreateCi(c.ID, c.Type, c.Properties)
 }
 
