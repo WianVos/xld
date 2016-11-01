@@ -165,7 +165,7 @@ func (r RepositoryServiceOp) NewCi(n string, t string, p map[string]interface{})
 		propType := metaData[k]
 		switch v := v.(type) {
 		case string:
-			if propType == "STRING" || propType == "CI" {
+			if propType == "STRING" || propType == "CI" || propType == "ENUM" {
 				fmt.Println("string")
 
 				ci.Properties[k] = v
