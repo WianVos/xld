@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -121,8 +120,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	}()
 
 	if err := json.NewDecoder(resp.Body).Decode(v); err != nil {
-		body, err := ioutil.ReadAll(resp.Body)
-		fmt.Println(string(body))
+		// body, err := ioutil.ReadAll(resp.Body)
+		// fmt.Println(string(body))
 		return nil, err
 	}
 
