@@ -274,9 +274,17 @@ func (r RepositoryServiceOp) TranslateCiProperties(n, t string, p map[string]int
 			if propType == "BOOLEAN" {
 				ci[k] = v
 			}
-		case int, float32, float64:
+		case int:
 			if propType == "INTEGER" {
-				ci[k] = int(v.(int))
+				ci[k] = v
+			}
+		case float32:
+			if propType == "INTEGER" {
+				ci[k] = v
+			}
+		case float64:
+			if propType == "INTEGER" {
+				ci[k] = v
 			}
 		case map[string]interface{}, map[string]string:
 			if propType == "MAP_STRING_STRING" {
