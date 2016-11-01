@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 )
 
 const (
@@ -110,7 +109,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	resp, err := c.client.Do(req)
 	//fmt.Printf("%+v\n", resp.Body)
-	_, err = io.Copy(os.Stdout, resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Println(body)
 	if err != nil {
 		return nil, err
 	}
