@@ -3,7 +3,6 @@ package xld
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -73,7 +72,6 @@ func New(config *Config) *Client {
 // BaseURL of the Client. Relative URLS should always be specified without a preceding slash. If specified, the
 // value pointed to by body is JSON encoded and included in as the request body.
 func (c *Client) NewRequest(urlStr string, method string, body interface{}) (*http.Request, error) {
-	fmt.Printf("%+v\n", body)
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -88,7 +86,6 @@ func (c *Client) NewRequest(urlStr string, method string, body interface{}) (*ht
 			return nil, err
 		}
 	}
-	fmt.Println(buf)
 	req, err := http.NewRequest(method, u.String(), buf)
 	if err != nil {
 		return nil, err
