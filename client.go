@@ -48,9 +48,9 @@ type Client struct {
 func NewClient(config *Config) *Client {
 	// create the base url out of the stuff given
 	var baseURL url.URL
-	finalHost := config.Host + ":" + config.Port + "/" + config.Context
+	finalHost := config.Host + ":" + config.Port
 	baseURL.Host = finalHost
-	baseURL.Path = basePath
+	baseURL.Path = config.Context
 	baseURL.Scheme = config.Scheme
 
 	c := &Client{client: http.DefaultClient, BaseURL: &baseURL, UserAgent: userAgent, Config: config}
