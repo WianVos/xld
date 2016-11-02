@@ -135,7 +135,6 @@ func (c *Client) VerifyConnection() bool {
 	}
 
 	u := c.BaseURL.ResolveReference(rel)
-	fmt.Println(u)
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return false
@@ -149,6 +148,7 @@ func (c *Client) VerifyConnection() bool {
 	resp, err := c.client.Do(req)
 
 	if resp.StatusCode == 200 && err == nil {
+		fmt.Println("Goxld: Succesfully conntected to XL-Deploy")
 		return true
 	}
 
