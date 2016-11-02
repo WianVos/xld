@@ -3,6 +3,7 @@ package xld
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -141,7 +142,7 @@ func (c *Client) VerifyConnection() bool {
 	req.Header.Add("User-Agent", c.UserAgent)
 
 	resp, err := c.client.Do(req)
-
+	fmt.Println(resp.StatusCode)
 	if resp.StatusCode == 200 && err == nil {
 		return true
 	}
