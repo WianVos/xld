@@ -287,9 +287,9 @@ func (r RepositoryServiceOp) TranslateCiProperties(n, t string, p map[string]int
 			}
 		case []string, []interface{}:
 			if propType == "SET_OF_STRING" || propType == "SET_OF_CI" {
-				if len(v.([]string)) > 0 {
-					ci[k] = v
-				}
+
+				ci[k] = v
+
 			}
 		}
 
