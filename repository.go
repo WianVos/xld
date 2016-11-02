@@ -261,9 +261,9 @@ func (r RepositoryServiceOp) TranslateCiProperties(n, t string, p map[string]int
 			fmt.Printf("unexpected type %T\n", v) // %T prints whatever type t has
 		case string:
 			if propType == "STRING" || propType == "CI" || propType == "ENUM" {
-				if len(v) > 0 {
-					ci[k] = v
-				}
+
+				ci[k] = v
+
 			}
 		case bool:
 			if propType == "BOOLEAN" {
