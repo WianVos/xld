@@ -50,7 +50,7 @@ func NewClient(config *Config) *Client {
 	var baseURL url.URL
 	finalHost := config.Host + ":" + config.Port
 	baseURL.Host = finalHost
-	baseURL.Path = config.Context
+	baseURL.Path = basePath
 	baseURL.Scheme = config.Scheme
 
 	c := &Client{client: http.DefaultClient, BaseURL: &baseURL, UserAgent: userAgent, Config: config}
@@ -129,7 +129,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 //VerifyConnection verifies that we have a valid connection to xld
 func (c *Client) VerifyConnection() bool {
 
-	rel, err := url.Parse("server/info")
+	rel, err := url.Parse("deployit/server/info")
 	if err != nil {
 		return false
 	}
