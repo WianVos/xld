@@ -128,14 +128,9 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 //VerifyConnection verifies that we have a valid connection to xld
 func (c *Client) VerifyConnection() bool {
 
-	rel, err := url.Parse("/server/info")
-	if err != nil {
-		return false
-	}
+	u := c.BaseURL.String() + "/server/info"
 
-	u := c.BaseURL.ResolveReference(rel)
-
-	req, err := http.NewRequest("GET", u.String(), nil)
+	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
 		return false
 	}
