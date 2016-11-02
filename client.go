@@ -130,7 +130,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 func (c *Client) VerifyConnection() bool {
 
 	u := c.BaseURL.String() + "/server/info"
-
+	fmt.Println(u)
 	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
 		return false
@@ -143,6 +143,7 @@ func (c *Client) VerifyConnection() bool {
 
 	resp, err := c.client.Do(req)
 	fmt.Println(resp.StatusCode)
+
 	if resp.StatusCode == 200 && err == nil {
 		return true
 	}
