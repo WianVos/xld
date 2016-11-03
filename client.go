@@ -42,6 +42,7 @@ type Client struct {
 
 	Repository RepositoryService
 	Meta       MetaDataService
+	Security   SecurityService
 }
 
 //NewClient returns a new functional client struct
@@ -57,6 +58,7 @@ func NewClient(config *Config) *Client {
 
 	c.Repository = &RepositoryServiceOp{client: c}
 	c.Meta = &MetaDataServiceOp{client: c}
+	c.Security = &SecurityServiceOp{client: c}
 
 	return c
 }
