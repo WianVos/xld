@@ -111,7 +111,7 @@ func (s SecurityServiceOp) SetPasswordForUser(n, p string) error {
 	u.Password = p
 	url := securityBasePath + "/user/" + n
 
-	req, err := s.client.NewRequest(url, "POST", u)
+	req, err := s.client.NewRequest(url, "PUT", u)
 
 	if err != nil {
 		return err
