@@ -1,6 +1,9 @@
 package xld
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 const (
 	securityBasePath = "deployit/security"
@@ -111,6 +114,8 @@ func (s SecurityServiceOp) SetPasswordForUser(n, p string) error {
 	u.Password = p
 	url := securityBasePath + "/user/" + n
 
+	fmt.Printf("%+v\n", u)
+	fmt.Println(url)
 	req, err := s.client.NewRequest(url, "PUT", u)
 
 	if err != nil {
