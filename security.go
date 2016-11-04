@@ -11,7 +11,7 @@ type SecurityService interface {
 	GetUser(n string) (User, error)
 	UserExists(n string) bool
 	CreateUser(n string, a bool) (User, error)
-	SetPasswordForUser(n, p string) (User, error)
+	SetPasswordForUser(n, p string) error
 }
 
 //SecurityServiceOp holds the communication service for the Security rest api
@@ -99,11 +99,11 @@ func (s SecurityServiceOp) CreateUser(n string, a bool) (User, error) {
 
 //SetPasswordForUser updates an already existing user with a password
 // this can be setting the password for the first time, or setting a new one
-func (s SecurityServiceOp) SetPasswordForUser(n, p string) (User, error) {
+func (s SecurityServiceOp) SetPasswordForUser(n, p string) error {
 	var u User
 
 	if s.UserExists(n) == false {
-		return u, errors.New("user does not exists, unable to set password")
+		return errors.New("user does not exists, unable to set password")
 	}
 
 	u, _ = s.GetUser(n)
@@ -114,16 +114,16 @@ func (s SecurityServiceOp) SetPasswordForUser(n, p string) (User, error) {
 	req, err := s.client.NewRequest(url, "POST", u)
 
 	if err != nil {
-		return u, err
+		return err
 	}
 
 	resp, err := s.client.Do(req, &u)
 
 	if err != nil {
-		return u, err
+		return err
 	}
 	defer resp.Body.Close()
 
-	return u, nil
+	return nil
 
 }
