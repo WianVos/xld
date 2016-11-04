@@ -62,7 +62,7 @@ type ciTrue struct {
 	Exists bool `json:"boolean"`
 }
 
-//GetCi retrieves a CI form xld
+//GetCi retrieves a CI fromm xld
 func (r RepositoryServiceOp) GetCi(n string) (Ci, error) {
 
 	var e map[string]interface{}
